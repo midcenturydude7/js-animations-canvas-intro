@@ -68,12 +68,6 @@ class Circle {
   }
 }
 
-// let x = Math.random() * innerWidth;
-// let y = Math.random() * innerHeight;
-// let dx = (Math.random() - 0.5) * 10;
-// let dy = (Math.random() - 0.5) * 10;
-// let radius = 30;
-
 const circleArray = [];
 
 for (let i = 0; i < 300; i++) {
