@@ -17,5 +17,5 @@ h1 {
 }
 
 canvas {
-  background-color: rgb(242, 242, 229);
+  background: linear-gradient(180deg, #c9c9c9 10%, #181811 100%);
 }
