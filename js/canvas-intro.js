@@ -88,32 +88,6 @@ const animate = () => {
   circleArray.forEach((circle) => {
     circle.update();
   });
-
-  // ctx.beginPath();
-  // ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-  // ctx.strokeStyle = "blue";
-  // ctx.stroke();
-
-  // if (x + radius > innerWidth || x - radius < 0) {
-  //   dx = -dx;
-  // }
-
-  // if (y + radius > innerHeight || y - radius < 0) {
-  //   dy = -dy;
-  // }
-
-  // x += dx;
-  // y += dy;
-
-  // for (let i = 0; i < 5; i++) {
-  //   let x = Math.random() * window.innerWidth;
-  //   let y = Math.random() * window.innerHeight;
-  //   let circ = Math.random() * 10 + 5;
-  //   ctx.beginPath();
-  //   ctx.arc(x, y, circ, 0, Math.PI * 2, false);
-  //   ctx.strokeStyle = colorArray[Math.floor(Math.random() * colorArray.length)];
-  //   ctx.stroke();
-  // }
 };
 
 animate();
