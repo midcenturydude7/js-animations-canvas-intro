@@ -45,7 +45,7 @@ const mouse = {
 };
 
 const maxRadius = 40;
-const minRadius = 0.5;
+const minRadius = 10;
 
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
@@ -209,7 +209,7 @@ let circleArray = [];
 
 function init() {
   circleArray = [];
-  for (let i = 0; i < 1200; i++) {
+  for (let i = 0; i < 500; i++) {
     const radius =
       Math.random() * (maxCircleRadius - minCircleRadius) + minCircleRadius;
     const x = Math.random() * (innerWidth - radius * 2) + radius;
