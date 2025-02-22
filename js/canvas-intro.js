@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const colorArray = ["#006D77", "#83C5BE", "#EDF6F9", "#FFDDD2", "#E29578"];
+const colorArray = ["#00E3CC", "#32A89C", "#009688", "#44E3D3", "#00635A"];
 
 // Rectangles
 // ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
@@ -36,14 +36,35 @@ const colorArray = ["#006D77", "#83C5BE", "#EDF6F9", "#FFDDD2", "#E29578"];
 const mouse = {
   x: undefined,
   y: undefined,
+  isInCanvas: false,
+  lastMoveTime: 0,
 };
 
 const maxRadius = 40;
-const minRadius = 5;
+const minRadius = 2;
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  init();
+});
 
 window.addEventListener("mousemove", (e) => {
   mouse.x = e.x;
   mouse.y = e.y;
+  mouse.isInCanvas = true;
+  mouse.lastMoveTime = Date.now();
+});
+
+window.addEventListener("mouseleave", () => {
+  mouse.isInCanvas = false;
+  mouse.x = undefined;
+  mouse.y = undefined;
+  // Trigger random reduction for each circle
+  circleArray.forEach((circle) => {
+    circle.targetRadius = circle.minRadius + Math.random() * 2;
+  });
 });
 
 class Circle {
@@ -52,20 +73,25 @@ class Circle {
     this.y = y;
     this.dx = dx;
     this.dy = dy;
+    this.initialDx = dx;
+    this.initialDy = dy;
     this.radius = radius;
+    this.minRadius = radius;
+    this.maxRadius = maxRadius;
     this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
+    this.targetRadius = radius;
+    this.shrinkSpeed = Math.random() * 0.5 + 0.5; // Random shrink speed for each circle
   }
 
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    ctx.fill();
     ctx.fillStyle = this.color;
-    ctx.strokeStyle = this.color;
-    ctx.stroke();
+    ctx.fill();
   }
 
   update() {
+    // Wall collisions
     if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
       this.dx = -this.dx;
     }
@@ -77,44 +103,63 @@ class Circle {
     this.x += this.dx;
     this.y += this.dy;
 
-    // Interactivity
-    if (
-      mouse.x - this.x < 50 &&
-      mouse.x - this.x > -50 &&
-      mouse.y - this.y < 50 &&
-      mouse.y - this.y > -50
-    ) {
-      if (this.radius < maxRadius) {
-        this.radius += 1;
+    // Keep within bounds
+    this.x = Math.max(this.radius, Math.min(innerWidth - this.radius, this.x));
+    this.y = Math.max(this.radius, Math.min(innerHeight - this.radius, this.y));
+
+    // Mouse interaction with time-based check
+    const currentTime = Date.now();
+    const timeSinceLastMove = currentTime - mouse.lastMoveTime;
+
+    if (mouse.isInCanvas && timeSinceLastMove < 100) {
+      // Only respond to recent mouse movements
+      const dx = mouse.x - this.x;
+      const dy = mouse.y - this.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 100) {
+        this.targetRadius = this.maxRadius;
+      } else {
+        this.targetRadius = this.minRadius + Math.random() * 2;
       }
-    } else if (this.radius > minRadius) {
-      this.radius -= 1;
+    } else if (timeSinceLastMove >= 100) {
+      // Gradually return to near minimum radius with some randomness
+      this.targetRadius = this.minRadius + Math.random() * 2;
+    }
+
+    // Smooth size transition with variable speed
+    if (this.radius > this.targetRadius) {
+      this.radius = Math.max(this.radius - this.shrinkSpeed, this.targetRadius);
+    } else if (this.radius < this.targetRadius) {
+      this.radius = Math.min(this.radius + 1, this.targetRadius);
     }
 
     this.draw();
   }
 }
 
-const circleArray = [];
+let circleArray = [];
 
-for (let i = 0; i < 300; i++) {
-  let radius = Math.random() * (maxRadius - minRadius) + 3;
-  let x = Math.random() * (innerWidth - radius * 2) + radius;
-  let y = Math.random() * (innerHeight - radius * 2) + radius;
-  let dx = (Math.random() - 0.5) * 3;
-  let dy = (Math.random() - 0.5) * 3;
-  let circle = new Circle(x, y, dx, dy, radius);
-  circleArray.push(circle);
-  circle.draw();
+function init() {
+  circleArray = [];
+  for (let i = 0; i < 800; i++) {
+    const radius = Math.random() * 3 + 1;
+    const x = Math.random() * (innerWidth - radius * 2) + radius;
+    const y = Math.random() * (innerHeight - radius * 2) + radius;
+    const dx = (Math.random() - 0.5) * 3; // Slightly faster initial velocity
+    const dy = (Math.random() - 0.5) * 3;
+    circleArray.push(new Circle(x, y, dx, dy, radius));
+  }
 }
 
-const animate = () => {
+function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-  circleArray.forEach((circle) => {
+  for (let circle of circleArray) {
     circle.update();
-  });
-};
+  }
+}
 
+init();
 animate();
