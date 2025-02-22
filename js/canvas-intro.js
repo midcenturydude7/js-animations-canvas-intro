@@ -4,6 +4,10 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Configuration
+const minCircleRadius = 2; // Minimum starting radius
+const maxCircleRadius = 6; // Maximum starting radius
+
 const colorArray = ["#00E3CC", "#32A89C", "#009688", "#44E3D3", "#00635A"];
 
 // Rectangles
@@ -61,9 +65,9 @@ window.addEventListener("mouseleave", () => {
   mouse.isInCanvas = false;
   mouse.x = undefined;
   mouse.y = undefined;
-  // Trigger random reduction for each circle
+  // Reset all circles to their original state
   circleArray.forEach((circle) => {
-    circle.targetRadius = circle.minRadius + Math.random() * 2;
+    circle.targetRadius = circle.minRadius;
   });
 });
 
@@ -80,31 +84,91 @@ class Circle {
     this.maxRadius = maxRadius;
     this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
     this.targetRadius = radius;
-    this.shrinkSpeed = Math.random() * 0.5 + 0.5; // Random shrink speed for each circle
+
+    // Glow effect properties
+    this.isGlowing = false;
+    this.glowIntensity = 0;
+    this.maxGlowIntensity = 20;
+    this.glowSpeed = 1;
+    this.glowProbability = 0.001; // Chance to start glowing
   }
 
   draw() {
     ctx.beginPath();
+
+    if (this.isGlowing) {
+      ctx.shadowBlur = this.glowIntensity;
+      ctx.shadowColor = this.color;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = this.color;
     ctx.fill();
+
+    // Reset shadow settings
+    ctx.shadowBlur = 0;
   }
 
   update() {
-    // Wall collisions
+    // Random chance to start glowing
+    if (!this.isGlowing && Math.random() < this.glowProbability) {
+      this.isGlowing = true;
+      this.glowIntensity = 0;
+    }
+
+    // Handle glowing effect
+    if (this.isGlowing) {
+      if (this.glowIntensity < this.maxGlowIntensity) {
+        this.glowIntensity += this.glowSpeed;
+      } else {
+        this.glowIntensity -= this.glowSpeed;
+        if (this.glowIntensity <= 0) {
+          this.isGlowing = false;
+          this.glowIntensity = 0;
+        }
+      }
+    }
+
+    // Update position first
+    this.x += this.dx;
+    this.y += this.dy;
+
+    // Wall collision detection and response
     if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
       this.dx = -this.dx;
+
+      // Reset velocity if it's too slow
+      if (Math.abs(this.dx) < Math.abs(this.initialDx) * 0.5) {
+        this.dx = this.dx > 0 ? this.initialDx : -this.initialDx;
+      }
+
+      // Adjust position to prevent sticking
+      if (this.x + this.radius > innerWidth) {
+        this.x = innerWidth - this.radius;
+      }
+      if (this.x - this.radius < 0) {
+        this.x = this.radius;
+      }
     }
 
     if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
       this.dy = -this.dy;
+
+      // Reset velocity if it's too slow
+      if (Math.abs(this.dy) < Math.abs(this.initialDy) * 0.5) {
+        this.dy = this.dy > 0 ? this.initialDy : -this.initialDy;
+      }
+
+      // Adjust position to prevent sticking
+      if (this.y + this.radius > innerHeight) {
+        this.y = innerHeight - this.radius;
+      }
+      if (this.y - this.radius < 0) {
+        this.y = this.radius;
+      }
     }
-
-    this.x += this.dx;
-    this.y += this.dy;
-
-    // Keep within bounds
-    this.x = Math.max(this.radius, Math.min(innerWidth - this.radius, this.x));
     this.y = Math.max(this.radius, Math.min(innerHeight - this.radius, this.y));
 
     // Mouse interaction with time-based check
@@ -117,21 +181,24 @@ class Circle {
       const dy = mouse.y - this.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 100) {
+      if (distance < 50) {
         this.targetRadius = this.maxRadius;
       } else {
-        this.targetRadius = this.minRadius + Math.random() * 2;
+        this.targetRadius = this.minRadius;
       }
-    } else if (timeSinceLastMove >= 100) {
-      // Gradually return to near minimum radius with some randomness
-      this.targetRadius = this.minRadius + Math.random() * 2;
+    } else {
+      this.targetRadius = this.minRadius;
     }
 
-    // Smooth size transition with variable speed
+    // Smooth size transition with preserved velocity
     if (this.radius > this.targetRadius) {
-      this.radius = Math.max(this.radius - this.shrinkSpeed, this.targetRadius);
+      // Gradual shrinking
+      const shrinkRate = 0.2;
+      this.radius = Math.max(this.radius - shrinkRate, this.targetRadius);
     } else if (this.radius < this.targetRadius) {
-      this.radius = Math.min(this.radius + 1, this.targetRadius);
+      // Quick growing for responsiveness
+      const growRate = 1;
+      this.radius = Math.min(this.radius + growRate, this.targetRadius);
     }
 
     this.draw();
@@ -143,7 +210,8 @@ let circleArray = [];
 function init() {
   circleArray = [];
   for (let i = 0; i < 800; i++) {
-    const radius = Math.random() * 3 + 1;
+    const radius =
+      Math.random() * (maxCircleRadius - minCircleRadius) + minCircleRadius;
     const x = Math.random() * (innerWidth - radius * 2) + radius;
     const y = Math.random() * (innerHeight - radius * 2) + radius;
     const dx = (Math.random() - 0.5) * 3; // Slightly faster initial velocity
