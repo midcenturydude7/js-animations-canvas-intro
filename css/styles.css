@@ -2,20 +2,109 @@
 *::after,
 *::before {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 html,
 body {
-  margin: 0;
-  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(
+    rgba(237, 255, 197, 0.1) 0%,
+    rgba(0, 0, 0, 0.8) 90%
+  );
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#resize {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(86, 239, 223, 1) 0%,
+    rgb(49, 99, 85, 1) 30%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  opacity: 0.85;
+  filter: blur(0.1em);
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 75%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box {
+  position: relative;
+  z-index: 1;
+  color: white;
+  padding: 2rem;
+  border: 2px solid white;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  transition: all 1s ease-in-out;
+}
+
+.box:nth-child(3) {
+  flex: 1 1 100%;
+  position: relative;
   overflow: hidden;
 }
 
-h1 {
-  font-family: short-films, sans-serif;
-  font-weight: 800;
-  font-style: normal;
+#canvas-box-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(45deg, #316355 0%, #56efdf 100%);
+  opacity: 0.75;
+  transition: all 1s ease-in-out;
 }
 
-canvas {
-  background: linear-gradient(180deg, #4ef2c4 0%, #30544a 30%, #000000 100%);
+#canvas-box-2:hover {
+  opacity: 1;
+}
+
+.box:hover {
+  background: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+}
+
+h1 {
+  font-family: "lobster", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+p {
+  font-family: "lobster", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }

@@ -8,7 +8,14 @@ canvas.height = window.innerHeight;
 const minCircleRadius = 2; // Minimum starting radius
 const maxCircleRadius = 6; // Maximum starting radius
 
-const colorArray = ["#00E3CC", "#32A89C", "#009688", "#44E3D3", "#00635A"];
+const colorArray = [
+  "#00E3CC",
+  "#32A89C",
+  "#009688",
+  "#44E3D3",
+  "#00635A",
+  "#000504",
+];
 
 // Rectangles
 // ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
@@ -87,10 +94,10 @@ class Circle {
 
     // Glow effect properties
     this.isGlowing = false;
-    this.glowIntensity = 0;
-    this.maxGlowIntensity = 20;
+    this.glowIntensity = 20;
+    this.maxGlowIntensity = 80;
     this.glowSpeed = 1;
-    this.glowProbability = 0.001; // Chance to start glowing
+    this.glowProbability = 0.01; // Chance to start glowing
   }
 
   draw() {
