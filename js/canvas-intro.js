@@ -25,7 +25,7 @@ const colorArray = [
 // ctx.fillStyle = "rgba(0, 255, 0, 0.2)";
 // ctx.fillRect(300, 300, 100, 100);
 
-// Lines
+// Lines;
 // ctx.beginPath();
 // ctx.moveTo(50, 300);
 // ctx.lineTo(300, 100);
