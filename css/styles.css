@@ -67,21 +67,31 @@ body {
 }
 
 .box:nth-child(3) {
-  flex: 1 1 100%;
-  position: relative;
-  overflow: hidden;
+flex: 1 1 100%;
+position: relative;
+height: 30vh;
+overflow: hidden;
+transition: all 1s ease-in-out;
+will-change: height;
+transform: translateZ(0);
+}
+
+.box:nth-child(3):hover {
+  height: 40vh;
 }
 
 #canvas-box-2 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: linear-gradient(45deg, #316355 0%, #56efdf 100%);
-  opacity: 0.75;
-  transition: all 1s ease-in-out;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+background: linear-gradient(45deg, #316355 0%, #56efdf 100%);
+opacity: 0.75;
+transition: all 1s ease-in-out;
+will-change: transform;
+transform: translateZ(0);
 }
 
 #canvas-box-2:hover {
@@ -89,7 +99,7 @@ body {
 }
 
 .box:hover {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
 }
 
