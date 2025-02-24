@@ -11,8 +11,8 @@ body {
   min-height: 100vh;
   overflow: hidden;
   background: radial-gradient(
-    rgba(237, 255, 197, 0.1) 0%,
-    rgba(0, 0, 0, 0.8) 90%
+    rgba(184, 253, 151, 0.2) 0%,
+    rgba(0, 0, 0, 0.4) 70%
   );
   background-size: cover;
   background-position: center;
@@ -28,8 +28,8 @@ body {
   height: 100vh;
   background: linear-gradient(
     180deg,
-    rgba(86, 239, 223, 1) 0%,
-    rgb(49, 99, 85, 1) 30%,
+    rgba(94, 255, 239, 1) 0%,
+    rgba(49, 99, 85, 1) 40%,
     rgba(0, 0, 0, 1) 100%
   );
   opacity: 0.85;
