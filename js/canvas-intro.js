@@ -5,8 +5,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // Configuration
-const minCircleRadius = 2; // Minimum starting radius
-const maxCircleRadius = 6; // Maximum starting radius
+const minCircleRadius = 4; // Minimum starting radius
+const maxCircleRadius = 10; // Maximum starting radius
 
 const colorArray = [
   "#00E3CC",
