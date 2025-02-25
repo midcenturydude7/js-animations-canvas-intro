@@ -33,7 +33,7 @@ body {
     rgba(0, 0, 0, 1) 100%
   );
   opacity: 0.85;
-  filter: blur(0.01em);
+  filter: blur(0.002em);
 }
 
 .wrapper {
