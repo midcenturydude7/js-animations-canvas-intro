@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Configuration
+// Circle Configuration: Min and Max Radius on Page Load
 const minCircleRadius = 2; // Minimum starting radius
 const maxCircleRadius = 15; // Maximum starting radius
 
